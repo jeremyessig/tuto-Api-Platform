@@ -13,6 +13,8 @@ use ApiPlatform\Metadata\Post as MetadataPost;
 use ApiPlatform\Metadata\Put;
 use DateTime;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Valid;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
@@ -34,11 +36,16 @@ class Post
     #[Groups(['read:collection'])]
     private ?int $id = null;
 
-    #[Groups(['read:collection', 'write:Post'])]
+    #[
+        Groups(['read:collection', 'write:Post']),
+        Length(min: 5, max: 255, groups: ['create:Post'])
+    ]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[Groups(['read:collection', 'write:Post'])]
+    #[
+        Groups(['read:collection', 'write:Post'])
+    ]
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
@@ -53,8 +60,11 @@ class Post
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[Groups(['read:item', 'write:Post'])]
-    #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[
+        Groups(['read:item', 'write:Post']),
+        Valid()
+    ]
+    #[ORM\ManyToOne(inversedBy: 'posts', cascade: ['persist'])]
     private ?Category $category = null;
 
 

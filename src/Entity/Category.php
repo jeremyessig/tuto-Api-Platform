@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource()]
@@ -19,7 +20,10 @@ class Category
     #[Groups(['read:Post'])]
     private ?int $id = null;
 
-    #[Groups(['read:Post'])]
+    #[
+        Groups(['read:Post', 'write:Post']),
+        Length(min: 3)
+    ]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
